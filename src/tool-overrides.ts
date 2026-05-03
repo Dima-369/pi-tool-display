@@ -20,7 +20,6 @@ import {
 } from "@mariozechner/pi-coding-agent";
 import { Container, Spacer, Text } from "@mariozechner/pi-tui";
 import { existsSync, readFileSync } from "node:fs";
-import { renderBashCall } from "./bash-display.js";
 import { homedir } from "node:os";
 import { isAbsolute, resolve } from "node:path";
 import {
@@ -1355,87 +1354,7 @@ export function registerToolDisplayOverrides(
         onUpdate,
       );
     },
-    renderCall(args, theme, context) {
-      return renderBashCall(args, theme, context);
-    },
-    renderResult(result, options, theme, context) {
-      const config = getConfig();
-      const details = result.details as BashToolDetails | undefined;
-      const rawOutput = extractTextOutput(result);
-
-      if (options.isPartial) {
-        return renderBashLivePreview(rawOutput, options, config, theme, details);
-      }
-
-      if (isToolError(result, context)) {
-        return renderBashErrorResult(rawOutput, options, config, theme, details);
-      }
-
-      const lines = prepareOutputLines(rawOutput, options);
-
-      if (lines.length === 0) {
-        let text = formatBashNoOutputLine(getStringField(context?.args, "command"), theme);
-        if (config.showTruncationHints) {
-          text += formatBashTruncationHints(details, theme);
-        }
-        return new Text(text, 0, 0);
-      }
-
-      if (config.bashOutputMode === "summary") {
-        if (options.expanded) {
-          const maxLines = getExpandedPreviewLineLimit(lines, config);
-          let preview = buildPreviewText(lines, maxLines, theme, true);
-          if (config.showTruncationHints) {
-            preview += formatBashTruncationHints(details, theme);
-          }
-          preview += formatExpandedPreviewCapHint(lines, config, theme);
-          return new Text(preview, 0, 0);
-        }
-
-        let summary = formatBashSummary(
-          lines,
-          details,
-          theme,
-          config.showTruncationHints,
-        );
-        summary += formatExpandHint(theme);
-        if (config.showTruncationHints) {
-          summary += formatBashTruncationHints(details, theme);
-        }
-        return new Text(summary, 0, 0);
-      }
-
-      if (config.bashOutputMode === "preview") {
-        const maxLines = options.expanded
-          ? getExpandedPreviewLineLimit(lines, config)
-          : config.previewLines;
-        let preview = buildPreviewText(lines, maxLines, theme, options.expanded);
-        if (config.showTruncationHints) {
-          preview += formatBashTruncationHints(details, theme);
-        }
-        if (options.expanded) {
-          preview += formatExpandedPreviewCapHint(lines, config, theme);
-        }
-        return new Text(preview, 0, 0);
-      }
-
-      if (!options.expanded && config.bashCollapsedLines === 0) {
-        let hidden = theme.fg("muted", "↳ output hidden");
-        if (config.showTruncationHints) {
-          hidden += formatBashTruncationHints(details, theme);
-        }
-        return new Text(hidden, 0, 0);
-      }
-
-      const maxLines = options.expanded
-        ? lines.length
-        : config.bashCollapsedLines;
-      let text = buildPreviewText(lines, maxLines, theme, options.expanded);
-      if (config.showTruncationHints) {
-        text += formatBashTruncationHints(details, theme);
-      }
-      return new Text(text, 0, 0);
-    },
+    // Using built-in pi bash rendering (no custom renderCall/renderResult)
     });
   });
 
