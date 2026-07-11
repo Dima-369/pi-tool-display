@@ -1073,83 +1073,86 @@ export function registerToolDisplayOverrides(
     });
   });
 
-  registerIfOwned("grep", () => {
-    pi.registerTool({
-      name: "grep",
-    label: "grep",
-    description: bootstrapTools.grep.description,
-    ...builtInPromptMetadata.grep,
-    parameters: clonedParameters.grep,
-    prepareArguments: bootstrapTools.grep.prepareArguments,
-    async execute(toolCallId, params, signal, onUpdate, ctx) {
-      return getBuiltInTools(ctx.cwd).grep.execute(
-        toolCallId,
-        params,
-        signal,
-        onUpdate,
-      );
-    },
-    renderCall(args, theme) {
-      const scope = shortenPath(args.path || ".");
-      const globSuffix = args.glob ? ` (${args.glob})` : "";
-      const limitSuffix =
-        args.limit !== undefined ? ` limit ${args.limit}` : "";
-      const line = `${theme.fg("toolTitle", theme.bold("grep"))} ${theme.fg("accent", `/${args.pattern}/`)}${theme.fg("muted", ` in ${scope}${globSuffix}${limitSuffix}`)}`;
-      return new Text(line, 0, 0);
-    },
-    renderResult(result, options, theme) {
-      const config = getConfig();
-      const details = result.details as GrepToolDetails | undefined;
-      return renderSearchResult(
-        result,
-        options,
-        config,
-        theme,
-        "match",
-        details,
-        "matches",
-      );
-    },
-    });
-  });
+  // ponytail: grep/find overrides disabled so another extension (e.g. @ff-labs/pi-fff)
+  // can register those tool names. The BuiltInTools interface still creates them for
+  // type-detail reuse, but we no longer call pi.registerTool for grep/find.
+  // registerIfOwned("grep", () => {
+  //   pi.registerTool({
+  //     name: "grep",
+  //   label: "grep",
+  //   description: bootstrapTools.grep.description,
+  //   ...builtInPromptMetadata.grep,
+  //   parameters: clonedParameters.grep,
+  //   prepareArguments: bootstrapTools.grep.prepareArguments,
+  //   async execute(toolCallId, params, signal, onUpdate, ctx) {
+  //     return getBuiltInTools(ctx.cwd).grep.execute(
+  //       toolCallId,
+  //       params,
+  //       signal,
+  //       onUpdate,
+  //     );
+  //   },
+  //   renderCall(args, theme) {
+  //     const scope = shortenPath(args.path || ".");
+  //     const globSuffix = args.glob ? ` (${args.glob})` : "";
+  //     const limitSuffix =
+  //       args.limit !== undefined ? ` limit ${args.limit}` : "";
+  //     const line = `${theme.fg("toolTitle", theme.bold("grep"))} ${theme.fg("accent", `/${args.pattern}/`)}${theme.fg("muted", ` in ${scope}${globSuffix}${limitSuffix}`)}`;
+  //     return new Text(line, 0, 0);
+  //   },
+  //   renderResult(result, options, theme) {
+  //     const config = getConfig();
+  //     const details = result.details as GrepToolDetails | undefined;
+  //     return renderSearchResult(
+  //       result,
+  //       options,
+  //       config,
+  //       theme,
+  //       "match",
+  //       details,
+  //       "matches",
+  //     );
+  //   },
+  //   });
+  // });
 
-  registerIfOwned("find", () => {
-    pi.registerTool({
-      name: "find",
-    label: "find",
-    description: bootstrapTools.find.description,
-    ...builtInPromptMetadata.find,
-    parameters: clonedParameters.find,
-    prepareArguments: bootstrapTools.find.prepareArguments,
-    async execute(toolCallId, params, signal, onUpdate, ctx) {
-      return getBuiltInTools(ctx.cwd).find.execute(
-        toolCallId,
-        params,
-        signal,
-        onUpdate,
-      );
-    },
-    renderCall(args, theme) {
-      const scope = shortenPath(args.path || ".");
-      const limitSuffix =
-        args.limit !== undefined ? ` (limit ${args.limit})` : "";
-      const line = `${theme.fg("toolTitle", theme.bold("find"))} ${theme.fg("accent", args.pattern)}${theme.fg("muted", ` in ${scope}${limitSuffix}`)}`;
-      return new Text(line, 0, 0);
-    },
-    renderResult(result, options, theme) {
-      const config = getConfig();
-      const details = result.details as FindToolDetails | undefined;
-      return renderSearchResult(
-        result,
-        options,
-        config,
-        theme,
-        "result",
-        details,
-      );
-    },
-    });
-  });
+  // registerIfOwned("find", () => {
+  //   pi.registerTool({
+  //     name: "find",
+  //   label: "find",
+  //   description: bootstrapTools.find.description,
+  //   ...builtInPromptMetadata.find,
+  //   parameters: clonedParameters.find,
+  //   prepareArguments: bootstrapTools.find.prepareArguments,
+  //   async execute(toolCallId, params, signal, onUpdate, ctx) {
+  //     return getBuiltInTools(ctx.cwd).find.execute(
+  //       toolCallId,
+  //       params,
+  //       signal,
+  //       onUpdate,
+  //     );
+  //   },
+  //   renderCall(args, theme) {
+  //     const scope = shortenPath(args.path || ".");
+  //     const limitSuffix =
+  //       args.limit !== undefined ? ` (limit ${args.limit})` : "";
+  //     const line = `${theme.fg("toolTitle", theme.bold("find"))} ${theme.fg("accent", args.pattern)}${theme.fg("muted", ` in ${scope}${limitSuffix}`)}`;
+  //     return new Text(line, 0, 0);
+  //   },
+  //   renderResult(result, options, theme) {
+  //     const config = getConfig();
+  //     const details = result.details as FindToolDetails | undefined;
+  //     return renderSearchResult(
+  //       result,
+  //       options,
+  //       config,
+  //       theme,
+  //       "result",
+  //       details,
+  //     );
+  //   },
+  //   });
+  // });
 
   registerIfOwned("ls", () => {
     pi.registerTool({
